@@ -15,61 +15,69 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setIconName:(NSString *)name){
     if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
-        [[UIApplication sharedApplication] setAlternateIconName:name completionHandler:^(NSError * _Nullable error) {
-            if( error != nil ){
-                NSLog(@"Error: %@", error.description );
-            }
-        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication] setAlternateIconName:name completionHandler:^(NSError * _Nullable error) {
+                if( error != nil ){
+                    NSLog(@"Error: %@", error.description );
+                }
+            }];
+        });
     }
 }
 
 RCT_EXPORT_METHOD(reset){
     if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
-        [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:^(NSError * _Nullable error) {
-            if( error != nil ){
-                NSLog(@"Error: %@", error.description );
-            }
-        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:^(NSError * _Nullable error) {
+                if( error != nil ){
+                    NSLog(@"Error: %@", error.description );
+                }
+            }];
+        });
     }
 }
 
 RCT_EXPORT_METHOD(getIconName:(RCTResponseSenderBlock) callback ){
-    NSString *name = @"default";
-    NSDictionary *results;
-    
-    if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
-        if( [[UIApplication sharedApplication] supportsAlternateIcons ] ){
-            name = [[UIApplication sharedApplication] alternateIconName];
-            if( name == nil ){
-                name = @"default";
-            }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *name = @"default";
+        NSDictionary *results;
+        
+        if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
+                if( [[UIApplication sharedApplication] supportsAlternateIcons ] ){
+                    name = [[UIApplication sharedApplication] alternateIconName];
+                    if( name == nil ){
+                        name = @"default";
+                    }
+                }
         }
-    }
-    
-    results = @{
-                @"iconName":name
-                };
-    callback(@[results]);
+        
+        results = @{
+                    @"iconName":name
+                    };
+        callback(@[results]);
+    });
 }
 
 RCT_EXPORT_METHOD(supportDevice:(RCTResponseSenderBlock) callback){
-    NSDictionary *results = @{
-                              @"supported":@NO
-                              };
-    
-    if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
-        if( [[UIApplication sharedApplication] supportsAlternateIcons ] ){
-            results = @{
-                        @"supported":@YES
-                        };
-        }else{
-            results = @{
-                        @"supported":@NO
-                        };
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *results = @{
+                                  @"supported":@NO
+                                  };
+        
+        if( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3") ){
+                if( [[UIApplication sharedApplication] supportsAlternateIcons ] ){
+                    results = @{
+                                @"supported":@YES
+                                };
+                }else{
+                    results = @{
+                                @"supported":@NO
+                                };
+                }
         }
-    }
-    
-    callback(@[results]);
+        
+        callback(@[results]);
+    });
 }
 
 @end
