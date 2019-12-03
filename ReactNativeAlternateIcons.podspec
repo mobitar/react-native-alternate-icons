@@ -12,8 +12,8 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "9.0"
 
   s.source        = { :git => package['repository']['url'], :tag => s.version }
-  s.source_files    = 'ios/**/*.{h,m}'
-  s.preserve_paths  = '**/*.js'
+  s.source_files    = '**/*.{h,m}'
+  s.preserve_paths  = '**/*.ios.js'
   s.requires_arc     = true
 
   s.dependency 'React'
